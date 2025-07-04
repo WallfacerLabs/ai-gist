@@ -3,11 +3,14 @@
 🚨 **CRITICAL REQUIREMENTS FOR AI AGENTS** 🚨
 
 **MUST DO BEFORE ANY CODING:**
-□ Set up Python virtual environment (python -m venv venv && source venv/bin/activate)
-□ Install vaultsfyi SDK (pip install vaultsfyi)
-□ Use SDK methods, NOT raw API calls
-□ Follow examples in python-examples/ for patterns
+□ Set up Python virtual environment (python -m venv venv && source venv/bin/activate) when using python
+
+□ Install vaultsfyi SDK (pip install vaultsfyi) when using python
+
+□ Use SDK methods, NOT raw API calls (unless asked by operator)
+
 □ Check vault object schema in this guide for field names
+
 
 **MUST NOT:**
 - Use requests library directly for API calls
@@ -431,11 +434,8 @@ const vaults = await client.getAllVaults({
       "isAppFeatured": true
     }
   ],
-  "pagination": {
-    "hasNext": true,
-    "page": 0,
-    "perPage": 100
-  }
+  "itemsOnPage": 100,
+  "nextPage": 1
 }
 ```
 
@@ -1032,6 +1032,12 @@ __pycache__/
 ```
 
 ### 4. Pagination Pattern
+
+**🚨 CRITICAL: CORRECT PAGINATION STRUCTURE**
+
+The vaults.fyi API uses `nextPage` field to indicate more pages, NOT `hasNext`. 
+
+**✅ CORRECT Pagination Pattern:**
 ```python
 def get_all_vaults_paginated(client):
     page = 0
@@ -1041,12 +1047,36 @@ def get_all_vaults_paginated(client):
         response = client.get_all_vaults(page=page, perPage=100)
         all_vaults.extend(response['data'])
         
-        if not response['pagination'].get('hasNext', False):
+        # ✅ CORRECT: Check for 'nextPage' field
+        next_page = response.get('nextPage')
+        if next_page is None:
             break
-        page += 1
+        page = next_page
     
     return all_vaults
 ```
+
+**❌ WRONG - Don't use 'hasNext':**
+```python
+# This will NOT work with vaults.fyi API
+if not response['pagination'].get('hasNext', False):  # ❌ WRONG
+```
+
+**API Response Structure:**
+```json
+{
+  "data": [...],
+  "itemsOnPage": 50,
+  "nextPage": 1    // Present if more pages exist, null/absent if last page
+}
+```
+
+**Key Pagination Fields:**
+- `itemsOnPage`: Number of items on current page
+- `nextPage`: Next page number (null if no more pages)
+- Pages start at 0
+- Default page size: 50 items
+- Maximum page size: 100 items
 
 ### 5. Error Handling Pattern
 ```python
