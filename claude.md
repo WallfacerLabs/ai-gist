@@ -100,7 +100,7 @@ deposit_options = client.get_deposit_options(
 
 #### Python SDK
 
-**IMPORTANT: Always use virtual environments for Python projects**
+**MANDATORY: Always create and activate a Python virtual environment before installing any packages. Never run pip install directly in the global environment. Use `python -m venv venv && source venv/bin/activate` (or `venv\Scripts\activate` on Windows) before any pip commands.**
 
 ```bash
 # Create and activate virtual environment
