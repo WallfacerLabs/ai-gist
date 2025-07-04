@@ -1,5 +1,21 @@
 # Vaults.fyi API Development Guide for AI Agents
 
+🚨 **CRITICAL REQUIREMENTS FOR AI AGENTS** 🚨
+
+**MUST DO BEFORE ANY CODING:**
+□ Set up Python virtual environment (python -m venv venv && source venv/bin/activate)
+□ Install vaultsfyi SDK (pip install vaultsfyi)
+□ Use SDK methods, NOT raw API calls
+□ Follow examples in python-examples/ for patterns
+□ Check vault object schema in this guide for field names
+
+**MUST NOT:**
+- Use requests library directly for API calls
+- Skip virtual environment setup
+- Guess API field names or endpoints
+- Fetch all data then filter in memory (wastes credits)
+- Create files without checking existing examples first
+
 This guide provides comprehensive instructions for AI agents working with the vaults.fyi API and SDKs. It covers the complete API structure, exact parameter specifications, and response schemas to prevent hallucination of non-existent endpoints or fields.
 
 ## Project Overview
@@ -70,12 +86,21 @@ usdc_vaults = [v for v in all_vaults['data'] if v['asset']['symbol'] == 'USDC']
 usdc_vaults = client.get_all_vaults(assetSymbol='USDC')
 ```
 
-**MANDATORY FILTERING PRACTICES:**
-1. **Always use query parameters** to filter data at the API level
-2. **Never fetch all data** then filter in memory - this wastes credits
-3. **Use pagination wisely** - only fetch pages you actually need
-4. **Be specific with filters** - combine multiple filters when possible
-5. **Cache results** when appropriate to avoid repeated API calls
+**🚨 MANDATORY FILTERING PRACTICES FOR AI AGENTS:**
+
+**YOU MUST:**
+1. ✅ Always use query parameters to filter at API level
+2. ✅ Use specific filters: network='mainnet', assetSymbol='USDC'
+3. ✅ Combine multiple filters when possible
+4. ✅ Use reasonable pagination (perPage≤100)
+5. ✅ Cache results to avoid repeated calls
+
+**YOU MUST NOT:**
+1. ❌ Fetch all data without filters
+2. ❌ Filter in memory after fetching
+3. ❌ Make unnecessary API calls
+4. ❌ Use large page sizes (>100)
+5. ❌ Ignore credit consumption warnings
 
 **Examples of Credit-Efficient Filtering:**
 ```python
@@ -100,7 +125,19 @@ deposit_options = client.get_deposit_options(
 
 #### Python SDK
 
-**MANDATORY: Always create and activate a Python virtual environment before installing any packages. Never run pip install directly in the global environment. Use `python -m venv venv && source venv/bin/activate` (or `venv\Scripts\activate` on Windows) before any pip commands.**
+**MANDATORY REQUIREMENT FOR AI AGENTS:**
+
+🚨 **YOU MUST ALWAYS:**
+- Create virtual environment: `python -m venv venv`
+- Activate it: `source venv/bin/activate` (Linux/Mac) OR `venv\Scripts\activate` (Windows)
+- Install SDK: `pip install vaultsfyi`
+- Import from vaultsfyi: `from vaultsfyi import VaultsSdk`
+
+🚨 **YOU MUST NOT:**
+- Use pip install globally without venv
+- Import requests library for API calls
+- Skip virtual environment setup
+- Use raw HTTP requests instead of SDK
 
 ```bash
 # Create and activate virtual environment
@@ -311,7 +348,19 @@ const vaults = await client.getAllVaults({
 });
 ```
 
-**🚨 CREDIT WARNING: Always use filters to reduce API response size and save credits! 🚨**
+**🚨 MANDATORY CREDIT EFFICIENCY RULES FOR AI AGENTS 🚨**
+
+**YOU MUST:**
+- Always use query parameters to filter at API level
+- Use specific filters: network, assetSymbol, onlyTransactional
+- Combine multiple filters when possible
+- Use pagination with reasonable page sizes (≤100)
+
+**YOU MUST NOT:**
+- Fetch all data without filters
+- Filter data in memory after API call
+- Make repeated calls for same data
+- Use large page sizes (>100)
 
 **Response Structure**:
 ```json
@@ -882,11 +931,52 @@ from vaultsfyi.exceptions import (
 import { HttpResponseError } from 'vaultsfyi';
 ```
 
+## MANDATORY REQUIREMENTS FOR AI AGENTS
+
+### 🚨 CRITICAL: Virtual Environment Setup
+
+**EVERY AI AGENT MUST:**
+1. Create virtual environment before any pip commands
+2. Activate virtual environment before installing packages
+3. Use vaultsfyi SDK, never raw requests
+4. Check existing examples before creating new files
+
+**VIOLATION OF THESE RULES IS UNACCEPTABLE**
+
 ## Best Practices
 
-### 1. Python Virtual Environment Management
+### 1. MANDATORY Python Virtual Environment Setup for AI Agents
 
-**CRITICAL: Always use virtual environments for Python projects to avoid dependency conflicts**
+**🚨 CRITICAL REQUIREMENT - YOU MUST FOLLOW THESE EXACT STEPS:**
+
+**STEP 1 - Create Virtual Environment (REQUIRED):**
+```bash
+python -m venv venv
+```
+
+**STEP 2 - Activate Virtual Environment (REQUIRED):**
+```bash
+source venv/bin/activate  # On macOS/Linux
+# OR
+venv\Scripts\activate     # On Windows
+```
+
+**STEP 3 - Install SDK (REQUIRED):**
+```bash
+pip install vaultsfyi
+```
+
+**STEP 4 - Use SDK in Code (REQUIRED):**
+```python
+from vaultsfyi import VaultsSdk
+# NOT: import requests
+```
+
+**AI AGENTS MUST NOT:**
+- Skip virtual environment creation
+- Use pip install without activating venv first
+- Import requests for API calls
+- Use global Python environment
 
 ```bash
 # Create virtual environment
@@ -1164,5 +1254,25 @@ const actions = await client.getActions({
   query: { amount: '1000000' }
 });
 ```
+
+## 🚨 REPUTATION SCORES: EXACT FIELD LOCATIONS
+
+**FOR AI AGENTS: Use these EXACT field paths for reputation/risk scores:**
+
+```python
+# In vault objects from get_all_vaults() or get_vault():
+vault_score = vault['score']['vaultScore']          # Main vault reputation score
+vault_tvl_score = vault['score']['vaultTvlScore']    # TVL-based score
+protocol_score = vault['score']['protocolTvlScore']  # Protocol reputation
+holder_score = vault['score']['holderScore']         # Holder concentration score
+network_score = vault['score']['networkScore']       # Network security score
+asset_score = vault['score']['assetScore']           # Asset quality score
+
+# ALL scores are in vault['score'] object
+# DO NOT look for 'reputation_score', 'risk_score', or 'rating' fields
+# USE ONLY the 'score' object fields shown above
+```
+
+**MANDATORY: Use ONLY these exact field names. Do not guess other field names.**
 
 This guide provides exact parameter specifications and response structures based on the actual SDK implementations to ensure accuracy and prevent API hallucinations.
