@@ -1,0 +1,19 @@
+{
+  "name": "vaults-fyi-docs-js-tests",
+  "version": "1.0.0",
+  "description": "Tests to verify JavaScript code examples from vaults.fyi documentation",
+  "type": "module",
+  "scripts": {
+    "test": "node test-runner.js",
+    "test-installation": "node test-installation.js",
+    "test-imports": "node test-imports.js",
+    "test-examples": "node test-examples.js",
+    "test-parameters": "node test-parameters.js"
+  },
+  "devDependencies": {
+    "@vaultsfyi/sdk": "^1.0.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

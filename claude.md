@@ -833,7 +833,7 @@ from vaultsfyi.exceptions import (
     AuthenticationError,
     HttpResponseError,
     RateLimitError,
-    VaultsSdkError
+    VaultsFyiError
 )
 ```
 
