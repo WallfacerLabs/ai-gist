@@ -224,6 +224,37 @@ get_historical_benchmarks(
 ) -> Dict[str, Any]
 ```
 
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getHistoricalBenchmarks({
+  path: {
+    network: string,    // Required
+    code: string        // Required
+  },
+  query?: {
+    page?: number,              // Optional: page number
+    perPage?: number,           // Optional: items per page
+    fromTimestamp?: number,     // Optional: start time (Unix timestamp)
+    toTimestamp?: number        // Optional: end time (Unix timestamp)
+  }
+})
+
+// Example usage
+const historicalData = await client.getHistoricalBenchmarks({
+  path: {
+    network: 'mainnet',
+    code: 'usd'
+  },
+  query: {
+    page: 0,
+    perPage: 100,
+    fromTimestamp: 1640995200,
+    toTimestamp: 1672531200
+  }
+});
+```
+
 **Response Structure**:
 ```json
 {
@@ -333,14 +364,23 @@ get_vault(
 ```
 
 **JavaScript Parameters**:
-```typescript
-getVault(params: {
+```javascript
+// Method signature
+client.getVault({
   path: {
-    network: string,
-    vaultAddress: string
+    network: string,        // Required: network name
+    vaultAddress: string    // Required: vault contract address
   },
   query?: { [key: string]: any }
 })
+
+// Example usage
+const vault = await client.getVault({
+  path: {
+    network: 'mainnet',
+    vaultAddress: '0x1234567890123456789012345678901234567890'
+  }
+});
 ```
 
 **Response Structure**: Same as individual vault object in `get_all_vaults()` response.
@@ -356,6 +396,39 @@ get_vault_historical_data(
     vault_address: str,  # Required
     **kwargs
 ) -> Dict[str, Any]
+```
+
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getVaultHistoricalData({
+  path: {
+    network: string,        // Required
+    vaultAddress: string    // Required
+  },
+  query?: {
+    apyInterval?: string,   // Optional: '1day', '7day', '30day'
+    fromTimestamp?: number, // Optional: Unix timestamp
+    toTimestamp?: number,   // Optional: Unix timestamp
+    page?: number,          // Optional: page number
+    perPage?: number        // Optional: items per page
+  }
+})
+
+// Example usage
+const historicalData = await client.getVaultHistoricalData({
+  path: {
+    network: 'mainnet',
+    vaultAddress: '0x1234567890123456789012345678901234567890'
+  },
+  query: {
+    apyInterval: '7day',
+    fromTimestamp: 1640995200,
+    toTimestamp: 1672531200,
+    page: 0,
+    perPage: 100
+  }
+});
 ```
 
 **Common Query Parameters**:
@@ -391,6 +464,23 @@ get_positions(
     user_address: str,   # Required: user's wallet address
     **kwargs
 ) -> Dict[str, Any]
+```
+
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getPositions({
+  path: {
+    userAddress: string   // Required: user's wallet address
+  }
+})
+
+// Example usage
+const positions = await client.getPositions({
+  path: {
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d'
+  }
+});
 ```
 
 **Response Structure**:
@@ -430,6 +520,32 @@ get_deposit_options(
     allowed_assets: Optional[List[str]] = None,  # Optional: ['USDC', 'USDS']
     **kwargs
 ) -> Dict[str, Any]
+```
+
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getDepositOptions({
+  path: {
+    userAddress: string                   // Required
+  },
+  query?: {
+    allowedAssets?: string[],             // Optional: ['USDC', 'USDS']
+    allowedNetworks?: string[],           // Optional: list of network names
+    disallowedNetworks?: string[]         // Optional: networks to exclude
+  }
+})
+
+// Example usage
+const depositOptions = await client.getDepositOptions({
+  path: {
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d'
+  },
+  query: {
+    allowedAssets: ['USDC', 'USDT'],
+    allowedNetworks: ['mainnet', 'base']
+  }
+});
 ```
 
 **Query Parameters**:
@@ -475,6 +591,23 @@ get_idle_assets(
     user_address: str,   # Required
     **kwargs
 ) -> Dict[str, Any]
+```
+
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getIdleAssets({
+  path: {
+    userAddress: string   // Required
+  }
+})
+
+// Example usage
+const idleAssets = await client.getIdleAssets({
+  path: {
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d'
+  }
+});
 ```
 
 **Response Structure**:
@@ -584,6 +717,27 @@ get_transactions_context(
 ) -> Dict[str, Any]
 ```
 
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getTransactionsContext({
+  path: {
+    userAddress: string,    // Required
+    network: string,        // Required
+    vaultAddress: string    // Required
+  }
+})
+
+// Example usage
+const context = await client.getTransactionsContext({
+  path: {
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d',
+    network: 'mainnet',
+    vaultAddress: '0x1234567890123456789012345678901234567890'
+  }
+});
+```
+
 ### 11. Vault Holder Events - `get_vault_holder_events()`
 
 **Purpose**: Get historical events for a user's interactions with a specific vault.
@@ -598,6 +752,27 @@ get_vault_holder_events(
 ) -> Dict[str, Any]
 ```
 
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getVaultHolderEvents({
+  path: {
+    userAddress: string,    // Required
+    network: string,        // Required
+    vaultAddress: string    // Required
+  }
+})
+
+// Example usage
+const events = await client.getVaultHolderEvents({
+  path: {
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d',
+    network: 'mainnet',
+    vaultAddress: '0x1234567890123456789012345678901234567890'
+  }
+});
+```
+
 ### 12. Vault Total Returns - `get_vault_total_returns()`
 
 **Purpose**: Calculate total returns for a user's position in a specific vault.
@@ -610,6 +785,27 @@ get_vault_total_returns(
     vault_address: str,  # Required
     **kwargs
 ) -> Dict[str, Any]
+```
+
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getVaultTotalReturns({
+  path: {
+    userAddress: string,    // Required
+    network: string,        // Required
+    vaultAddress: string    // Required
+  }
+})
+
+// Example usage
+const returns = await client.getVaultTotalReturns({
+  path: {
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d',
+    network: 'mainnet',
+    vaultAddress: '0x1234567890123456789012345678901234567890'
+  }
+});
 ```
 
 ## Error Handling
@@ -927,18 +1123,6 @@ const actions = await client.getActions({
   },
   query: { amount: '1000000' }
 });
-```
-
-### Network Reference
-```python
-NETWORKS = {
-    'mainnet': {'chainId': 1, 'caip': 'eip155:1'},
-    'optimism': {'chainId': 10, 'caip': 'eip155:10'},
-    'arbitrum': {'chainId': 42161, 'caip': 'eip155:42161'},
-    'polygon': {'chainId': 137, 'caip': 'eip155:137'},
-    'gnosis': {'chainId': 100, 'caip': 'eip155:100'},
-    'base': {'chainId': 8453, 'caip': 'eip155:8453'},
-}
 ```
 
 This guide provides exact parameter specifications and response structures based on the actual SDK implementations to ensure accuracy and prevent API hallucinations.
