@@ -123,15 +123,42 @@ client = VaultsSdk(
 ```
 
 #### JavaScript SDK
+
+**Installation and Setup**
+
 ```bash
-npm install vaultsfyi
+# Install the SDK
+npm install @vaultsfyi/sdk
+
+# Set up environment variable
+export VAULTS_FYI_API_KEY="your_api_key_here"
 ```
 
-```typescript
-import { VaultsSdk } from 'vaultsfyi';
+**ES Module Import (Recommended)**
+```javascript
+import pkg from '@vaultsfyi/sdk';
+const { VaultsSdk } = pkg;
 
-const client = new VaultsSdk({ 
-    apiKey: "your_api_key_here" 
+const client = new VaultsSdk({
+    apiKey: process.env.VAULTS_FYI_API_KEY
+});
+```
+
+**CommonJS Import**
+```javascript
+const { VaultsSdk } = require('@vaultsfyi/sdk');
+
+const client = new VaultsSdk({
+    apiKey: process.env.VAULTS_FYI_API_KEY
+});
+```
+
+**TypeScript Usage**
+```typescript
+import { VaultsSdk } from '@vaultsfyi/sdk';
+
+const client = new VaultsSdk({
+    apiKey: process.env.VAULTS_FYI_API_KEY!
 });
 ```
 
@@ -150,13 +177,22 @@ get_benchmarks(
 ```
 
 **JavaScript Parameters**:
-```typescript
-getBenchmarks(params: {
+```javascript
+// Method signature
+client.getBenchmarks({
   path: {
-    network: string,
-    code: string
+    network: string,    // Required: 'mainnet', 'base', 'arbitrum', etc.
+    code: string        // Required: 'usd' or 'eth'
   }
 })
+
+// Example usage
+const benchmarks = await client.getBenchmarks({
+  path: {
+    network: 'mainnet',
+    code: 'usd'
+  }
+});
 ```
 
 **Response Structure**:
@@ -218,13 +254,31 @@ get_historical_benchmarks(
 get_all_vaults(**kwargs) -> Dict[str, Any]
 ```
 
-**Common Query Parameters**:
-- `page`: Page number (starting from 0)
-- `perPage`: Number of items per page
-- `network`: Network filter ('mainnet', 'base', etc.)
-- `assetSymbol`: Asset symbol filter ('USDC', 'USDS', etc.)
-- `onlyTransactional`: boolean - only vaults supporting transactions
-- `onlyAppFeatured`: boolean - only featured vaults
+**JavaScript Parameters**:
+```javascript
+// Method signature
+client.getAllVaults({
+  query?: {
+    page?: number,              // Page number (starting from 0)
+    perPage?: number,           // Number of items per page
+    network?: string,           // Network filter ('mainnet', 'base', etc.)
+    assetSymbol?: string,       // Asset symbol filter ('USDC', 'USDS', etc.)
+    onlyTransactional?: boolean, // Only vaults supporting transactions
+    onlyAppFeatured?: boolean   // Only featured vaults
+  }
+})
+
+// Example usage - Credit-efficient filtering
+const vaults = await client.getAllVaults({
+  query: {
+    network: 'mainnet',
+    assetSymbol: 'USDC',
+    onlyTransactional: true,
+    page: 0,
+    perPage: 50
+  }
+});
+```
 
 **🚨 CREDIT WARNING: Always use filters to reduce API response size and save credits! 🚨**
 
@@ -458,20 +512,36 @@ get_actions(
 ```
 
 **JavaScript Parameters**:
-```typescript
-getActions(params: {
+```javascript
+// Method signature
+client.getActions({
   path: {
-    action: string,
-    userAddress: string,
-    network: string,
-    vaultAddress: string
+    action: string,        // Required: 'deposit', 'redeem', etc.
+    userAddress: string,   // Required: user's wallet address
+    network: string,       // Required: network name
+    vaultAddress: string   // Required: vault contract address
   },
   query?: {
-    amount?: string,
-    assetAddress?: string,
-    simulate?: boolean
+    amount?: string,       // Optional: amount in wei
+    assetAddress?: string, // Optional: asset contract address
+    simulate?: boolean     // Optional: simulate transaction
   }
 })
+
+// Example usage
+const actions = await client.getActions({
+  path: {
+    action: 'deposit',
+    userAddress: '0xdB79e7E9e1412457528e40db9fCDBe69f558777d',
+    network: 'mainnet',
+    vaultAddress: '0x1234567890123456789012345678901234567890'
+  },
+  query: {
+    amount: '1000000000', // 1000 USDC (6 decimals)
+    assetAddress: '0xA0b86a33E6441f3F56F2B05e7b4B8B7F5A5f0e1B',
+    simulate: true
+  }
+});
 ```
 
 **Response Structure**:
@@ -765,9 +835,10 @@ def prepare_deposit(client, user_address, network, vault_address, amount):
 - **Structure**: Modular design with separate client, exceptions, and utilities modules
 
 ### JavaScript SDK
-- **Package**: `vaultsfyi` on npm
+- **Package**: `@vaultsfyi/sdk` on npm
 - **Implementation**: Uses native `fetch` API with TypeScript support
 - **Features**: OpenAPI-generated types for complete type safety
+- **Requirements**: Node.js 16+ with ES modules support
 
 ### Key Implementation Details
 - Both SDKs use the same API endpoints and response structures
@@ -784,10 +855,12 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install vaultsfyi
 
 # JavaScript SDK
-npm install vaultsfyi
+npm install @vaultsfyi/sdk
 ```
 
 ### Common Patterns
+
+**Python**
 ```python
 # Initialize client
 client = VaultsSdk(api_key="your_key")
@@ -800,6 +873,35 @@ positions = client.get_positions("0x...")
 
 # Generate deposit transaction
 actions = client.get_actions("deposit", "0x...", "mainnet", "0x...", amount="1000000")
+```
+
+**JavaScript**
+```javascript
+// Initialize client
+import pkg from '@vaultsfyi/sdk';
+const { VaultsSdk } = pkg;
+const client = new VaultsSdk({ apiKey: process.env.VAULTS_FYI_API_KEY });
+
+// Get all vaults (credit-efficient filtering)
+const vaults = await client.getAllVaults({
+  query: { network: 'mainnet', assetSymbol: 'USDC' }
+});
+
+// Get user positions
+const positions = await client.getPositions({
+  path: { userAddress: '0x...' }
+});
+
+// Generate deposit transaction
+const actions = await client.getActions({
+  path: {
+    action: 'deposit',
+    userAddress: '0x...',
+    network: 'mainnet',
+    vaultAddress: '0x...'
+  },
+  query: { amount: '1000000' }
+});
 ```
 
 ### Network Reference
