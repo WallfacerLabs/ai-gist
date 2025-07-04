@@ -326,18 +326,58 @@ const vaults = await client.getAllVaults({
         "networkCaip": "eip155:1"
       },
       "protocol": {
-        "name": "Protocol Name"
+        "name": "Protocol Name",
+        "protocolLogo": "https://example.com/logo.png"
       },
       "asset": {
         "address": "0x...",
+        "assetCaip": "eip155:1/erc20:0x...",
         "symbol": "USDC",
         "name": "USD Coin",
         "decimals": 6,
+        "assetLogo": "https://example.com/usdc.png",
         "assetPriceInUsd": "1.0"
       },
       "apy": {
-        "total": 0.0525
+        "total": 0.0525,
+        "base": 0.04,
+        "reward": 0.0125
       },
+      "tvl": {
+        "totalValueLocked": "1000000.50",
+        "totalValueLockedUsd": "1000000.50"
+      },
+      "score": {
+        "vaultScore": 85.7,
+        "vaultTvlScore": 92.3,
+        "protocolTvlScore": 88.1,
+        "holderScore": 79.4,
+        "networkScore": 95.0,
+        "assetScore": 98.2
+      },
+      "holdersData": {
+        "totalCount": 1250,
+        "totalBalance": "850000.25"
+      },
+      "rewards": [
+        {
+          "asset": {
+            "symbol": "COMP",
+            "name": "Compound",
+            "address": "0x..."
+          },
+          "apy": 0.0125
+        }
+      ],
+      "lpToken": {
+        "address": "0x...",
+        "symbol": "cUSDC",
+        "name": "Compound USDC",
+        "decimals": 8
+      },
+      "tags": ["lending", "stablecoin", "blue-chip"],
+      "description": "High-yield USDC lending vault with automated compound strategies",
+      "lendUrl": "https://compound.finance/markets/usdc",
       "isTransactional": true,
       "isAppFeatured": true
     }
