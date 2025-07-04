@@ -758,24 +758,21 @@ def prepare_deposit(client, user_address, network, vault_address, amount):
 
 ## SDK Development Notes
 
-### Python SDK Structure
-- **Main Client**: `/Users/kaimi/Code/python-sdk/vaultsfyi/client.py`
-- **Exceptions**: `/Users/kaimi/Code/python-sdk/vaultsfyi/exceptions.py`
-- **Utilities**: `/Users/kaimi/Code/python-sdk/vaultsfyi/utils.py`
-- **Tests**: `/Users/kaimi/Code/python-sdk/tests/test_client.py`
+### Python SDK
+- **Repository**: https://github.com/WallfacerLabs/python-sdk
+- **Package**: `vaultsfyi` on PyPI
+- **Implementation**: Uses `requests` library with retry logic and proper error handling
+- **Structure**: Modular design with separate client, exceptions, and utilities modules
 
-### JavaScript SDK Structure
-- **Main Client**: `/Users/kaimi/Code/js-sdk/src/client.ts`
-- **Type Definitions**: `/Users/kaimi/Code/js-sdk/src/types/`
-- **Error Handling**: `/Users/kaimi/Code/js-sdk/src/errors.ts`
-- **Tests**: `/Users/kaimi/Code/js-sdk/test/`
+### JavaScript SDK
+- **Package**: `vaultsfyi` on npm
+- **Implementation**: Uses native `fetch` API with TypeScript support
+- **Features**: OpenAPI-generated types for complete type safety
 
 ### Key Implementation Details
 - Both SDKs use the same API endpoints and response structures
-- Python SDK uses `requests` library with retry logic
-- JavaScript SDK uses native `fetch` API with TypeScript support
 - Both implement proper error handling and rate limiting
-- OpenAPI-generated types ensure consistency in JavaScript SDK
+- Consistent method naming and parameter handling across languages
 
 ## Quick Reference
 
