@@ -776,19 +776,44 @@ def validate_network(client, network: str) -> bool:
 ## Common Use Cases
 
 ### 1. Find Best Yield Opportunities
+
+**🚨 CREDIT-EFFICIENT APPROACH: Use the dedicated deposit options endpoint**
+
 ```python
-def find_best_yields(client, asset_symbol='USDC', min_apy=0.03):
-    vaults = client.get_all_vaults(
-        assetSymbol=asset_symbol,
-        onlyTransactional=True
+def find_best_yields(client, user_address, allowed_assets=['USDC'], allowed_networks=['mainnet']):
+    """
+    ✅ CORRECT: Use get_deposit_options() - it's designed for this exact purpose
+    This endpoint returns optimal yield opportunities for user's assets
+    """
+    deposit_options = client.get_deposit_options(
+        user_address=user_address,
+        allowed_assets=allowed_assets,
+        allowedNetworks=allowed_networks
     )
     
-    best_vaults = [
-        vault for vault in vaults['data']
-        if vault['apy']['total'] >= min_apy
-    ]
+    # The API already returns sorted best options per asset
+    return deposit_options
+
+# ❌ WRONG - Don't do this (wastes credits):
+# def find_best_yields_wrong(client, asset_symbol='USDC', min_apy=0.03):
+#     vaults = client.get_all_vaults(assetSymbol=asset_symbol)  # Fetches ALL vaults
+#     return [v for v in vaults['data'] if v['apy']['total'] >= min_apy]  # Filters in memory
+```
+
+**JavaScript Example:**
+```javascript
+async function findBestYields(client, userAddress, allowedAssets = ['USDC']) {
+    // ✅ CORRECT: Use the dedicated endpoint
+    const depositOptions = await client.getDepositOptions({
+        path: { userAddress },
+        query: { 
+            allowedAssets,
+            allowedNetworks: ['mainnet', 'base']
+        }
+    });
     
-    return sorted(best_vaults, key=lambda x: x['apy']['total'], reverse=True)
+    return depositOptions;
+}
 ```
 
 ### 2. Portfolio Analysis
